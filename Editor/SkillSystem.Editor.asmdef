@@ -1,0 +1,18 @@
+{
+    "name": "SkillSystem.Editor",
+    "rootNamespace": "SkillSystem.Editor",
+    "references": [
+        "GUID:041b19db3e061a8428b32b4169b71274"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,19 @@
+{
+  "name": "com.emreemiroglu.skillsystem",
+  "version": "1.0.0",
+  "displayName": "SkillSystem",
+  "description": "Skill System is a fully modular, data-driven, editor-assisted skill framework for Unity.",
+  "author": {
+    "name": "Emre Emiroglu",
+    "email": "emirogluemre08@gmail.com",
+    "url": "https://github.com/Emre-Emiroglu"
+  },
+  "keywords": [
+    "utilities",
+    "unity"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Emre-Emiroglu/AbilitySystem.git"
+  }
+}
