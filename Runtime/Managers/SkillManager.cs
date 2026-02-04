@@ -77,7 +77,7 @@ namespace SkillSystem.Runtime.Managers
                     prereqInstance is ISkillLogic<SkillData> { GetSkillState: SkillState.Unlocked });
 
                 if (allUnlocked)
-                    skill.ChangeState(SkillState.Unlocked);
+                    InvokeMethod(instance, "ChangeState", new object[] { SkillState.Unlockable });
             }
         }
         private static bool TryGetSkill(string skillName, out SkillData data, out object instance)

@@ -1,7 +1,6 @@
 ﻿using SkillSystem.Runtime.Data;
 using SkillSystem.Runtime.Enums;
 using SkillSystem.Runtime.Interfaces;
-using UnityEngine;
 
 namespace SkillSystem.Runtime.Skills
 {
@@ -17,23 +16,12 @@ namespace SkillSystem.Runtime.Skills
         #endregion
         
         #region Core
-        public void Initialize(TSkillData skillData)
+        public virtual void Initialize(TSkillData skillData)
         {
             SkillData = skillData;
             SkillState = SkillState.Locked;
-            
-            LogMessage($"Skill: {SkillData.SkillName} Initialized");
         }
-        public virtual void ChangeState(SkillState newSkillState)
-        {
-            SkillState = newSkillState;
-
-            LogMessage($"Skill: {SkillData.SkillName} State Changed → {SkillState}");
-        }
-        #endregion
-        
-        #region Executes
-        private static void LogMessage(string message) => Debug.Log(message);
+        public virtual void ChangeState(SkillState newSkillState) => SkillState = newSkillState;
         #endregion
     }
 }

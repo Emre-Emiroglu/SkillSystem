@@ -3,6 +3,7 @@
     public enum SkillState
     {
         Locked,
+        Unlockable,
         Unlocked
     }
 }
