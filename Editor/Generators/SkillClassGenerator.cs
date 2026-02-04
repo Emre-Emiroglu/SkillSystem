@@ -37,7 +37,6 @@ namespace SkillSystem.Editor.Generators
             string content =
 $@"using SkillSystem.Runtime.Data;
 using SkillSystem.Runtime.Enums;
-using SkillSystem.Runtime.Skills;
 
 namespace SkillSystem.Runtime.Skills
 {{

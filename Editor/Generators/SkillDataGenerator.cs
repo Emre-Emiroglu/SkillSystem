@@ -51,8 +51,7 @@ namespace SkillSystem.Editor.Generators
             Debug.Log($"[SkillDataGenerator] Creating data class file → {classFilePath}");
 
             string content =
-$@"using System.Collections.Generic;
-using UnityEngine;
+$@"using UnityEngine;
 
 namespace SkillSystem.Runtime.Data
 {{
