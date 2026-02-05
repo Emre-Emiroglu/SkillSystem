@@ -124,6 +124,20 @@ namespace SkillSystem.Runtime.Managers
                     
             method?.Invoke(instance, parameters);
         }
+        public static bool TryGetSkillState(string skillName, out SkillState state)
+        {
+            state = SkillState.Locked;
+
+            if (!InstanceMap.TryGetValue(skillName, out object instance))
+                return false;
+
+            if (instance is not ISkillLogic<SkillData> skill)
+                return false;
+            
+            state = skill.GetSkillState;
+                
+            return true;
+        }
         #endregion
     }
 }

@@ -8,7 +8,7 @@ namespace SkillSystem.Runtime.Data
         #region Fields
         [Header("Skill Data Field")]
         [SerializeField] private string skillName;
-        [SerializeField] private List<SkillData> prerequisites;
+        [SerializeField] private List<SkillData> prerequisites = new();
         #endregion
 
         #region Properities
@@ -23,5 +23,14 @@ namespace SkillSystem.Runtime.Data
             set => prerequisites = value;
         }
         #endregion
+        
+#if UNITY_EDITOR
+        [SerializeField] private Vector2 editorPosition;
+        public Vector2 EditorPosition
+        {
+            get => editorPosition;
+            set => editorPosition = value;
+        }
+#endif
     }
 }

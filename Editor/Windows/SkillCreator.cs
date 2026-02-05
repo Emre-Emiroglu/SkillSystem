@@ -35,8 +35,8 @@ namespace SkillSystem.Editor.Windows
 
             window.titleContent = new GUIContent("Skill Creator");
 
-            window.minSize = new Vector2(260, 140);
-            window.maxSize = new Vector2(520, 300);
+            window.minSize = new Vector2(256, 128);
+            window.maxSize = new Vector2(512, 256);
 
             window.Show();
         }
