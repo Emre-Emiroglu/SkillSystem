@@ -1,111 +1,95 @@
-# AbilitySystem
-AbilitySystem is a modular, extendable and editor-friendly ability framework for Unity.  
-It allows developers to quickly create ability data (ScriptableObjects), generate ability logic classes, and manage abilities at runtime through a dynamic pooling system.
-
-This package provides a clean workflow for creating, executing, canceling, and managing abilities without requiring boilerplate coding.
+# SkillSystem
+SkillSystem is a lightweight, modular and editor-friendly skill framework for Unity.
+It allows developers to quickly create skill data (ScriptableObjects), generate skill logic classes, and control skill state changes at runtime through a clean and extensible architecture.
 
 ## Features
-AbilitySystem offers the following capabilities:
+SkillSystem offers the following capabilities:
 
 ### Automatic Class Generation
-* Generate AbilityData classes (ScriptableObjects)
-* Generate corresponding Ability logic classes
-* Create ScriptableObject instances directly from the editor
+* Generate SkillData classes (ScriptableObjects)
+* Generate corresponding Skill logic classes
+* Create Skill ScriptableObject instances directly from the editor
+* Automatically assign the SkillName field
 
 ### Editor Window Tools
-* “Ability Creator” editor window for creating abilities with one click
-* Debug-friendly logs to trace generation steps
+* “Skill Creator” editor window for creating skills with one click
+* Simple and predictable editor workflow
+* Simple and predictable editor workflow
 
-### Runtime Ability Manager
-* Loads abilities from Resources automatically
-* Spawns, executes and cancels abilities at runtime
-* Built-in pooling system (Spawn/Release) for efficient reuse
-* Support for multiple simultaneous ability instances
-* Reflection-free ability logic during runtime except for initial discovery
+### Runtime Skill Manager
+* Loads all SkillData assets automatically from Resources
+* Dynamically creates skill logic instances at runtime
+* Initializes skills on demand
+* Changes skill states through a centralized manager
+* Reflection is only used for initial skill discovery
 
 ### Fully Testable Architecture
 * Edit Mode tests for class & asset generation
-* Play Mode tests for runtime execution, pooling, and cancellation logic
+* Play Mode tests for runtime initialize and change state logic
 
 ## Getting Started
 Install via UPM with git URL
 
-`https://github.com/Emre-Emiroglu/AbilitySystem.git`
+`https://github.com/Emre-Emiroglu/SkillSystem.git`
 
 Clone the repository
 ```bash
-git clone https://github.com/Emre-Emiroglu/AbilitySystem.git
+git clone https://github.com/Emre-Emiroglu/SkillSystem.git
 ```
 This project is developed using Unity version 6000.2.6f2.
 
 ## Usage
-### 1. Creating Abilities from the Editor
-
-Open the ability creation window:
-
-**Tools → Ability Creator**
+### 1. Creating Skills from the Editor
+Open the skill creation window: **Tools → Skill Creator**
 
 From this window you can:
-* Generate **AbilityData** class
-* Generate **Ability logic** class
-* Create the **ScriptableObject** for the ability
-* Automatically assign the **AbilityName** field
+* Generate **SkillData** class
+* Generate **Skill logic** class
+* Create the **Skill ScriptableObject**
+* Automatically assign the **SkillName** field
 
-### 2. Writing Ability Logic
+### 2. Writing Skill Logic
+An example auto-generated skill class:
 
-An example auto-generated ability class:
-
-```csharp using AbilitySystem.Runtime.Data;
-public sealed class FireballAbility : BaseAbility
+```csharp using SkillSystem.Runtime.Data;
+public sealed class TestSkill :BaseSkill<TestSkillData>
 {
-    public override void Execute()
+    public override void Initialize(TestSkillData skillData)
     {
-        base.Execute(); // Your fireball execute logic here 
+        base.Initialize(skillData);
+        
+        // TODO: TestSkill initialize logic here
+    }
+
+    public override void ChangeState(SkillState newSkillState)
+    {
+        base.ChangeState(newSkillState);
+        
+        // TODO: TestSkill change state logic here
     }
 }
 ```
 
-### 3. Using AbilityManager at Runtime
-
-#### Initialize the AbilityManager
-
+### 3. Using SkillManager at Runtime
+#### Initialize the SkillManager
 Call this once (e.g., in a GameManager):
 
 ```csharp
-AbilityManager.InitializeManager();
+SkillManager.InitializeManager();
 ```
 
-#### Spawn an ability instance
-
-Creates a new instance or retrieves one from the pool:
+#### Initialize a Skill
+Creates and initializes the skill instance if needed:
 
 ```csharp
-var ability = AbilityManager.Spawn("Fireball");
+SkillManager.InitializeSkill("TestSkill");
 ```
 
-#### Release an ability instance (return to pool)
+#### Change Skill State
+Updates the runtime state of a skill:
 
 ```csharp
-AbilityManager.Release(ability);
-```
-
-#### Execute an ability instance
-
-```csharp
-AbilityManager.Execute(ability);
-```
-
-#### Execute all active abilities of a type
-
-```csharp
-AbilityManager.ExecuteAll("Fireball");
-
-```
-
-#### Cancel all active abilities of a type
-
-```csharp
-AbilityManager..CancelAll("Fireball");
+SkillManager.ChangeSkillState("TestSkill", SkillState.Unlocked);
 ```
 
 ## Acknowledgments

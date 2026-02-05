@@ -1,4 +1,4 @@
-﻿## [1.0.0] - 2026-02-04
+﻿## [1.0.0] - 2026-02-05
 
 ### Added
 - **Skill Creator Editor Window**: Create skills from `Tools → Skill Creator`
