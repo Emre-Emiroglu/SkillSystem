@@ -14,7 +14,6 @@ SkillSystem offers the following capabilities:
 ### Editor Window Tools
 * “Skill Creator” editor window for creating skills with one click
 * Simple and predictable editor workflow
-* Simple and predictable editor workflow
 
 ### Runtime Skill Manager
 * Loads all SkillData assets automatically from Resources
