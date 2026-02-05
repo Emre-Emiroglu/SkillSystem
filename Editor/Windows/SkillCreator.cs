@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace SkillSystem.Editor.Windows
 {
+    /// <summary>
+    /// Editor window used to generate skill classes and ScriptableObject assets.
+    /// </summary>
     public sealed class SkillCreator : EditorWindow
     {
         #region Fields
@@ -56,13 +59,9 @@ namespace SkillSystem.Editor.Windows
 
             string sanitizedSkillName = GetSanitizedSkillName();
 
-            Debug.Log($"[SkillCreator] Generating classes for → {sanitizedSkillName}");
-
             SkillDataGenerator.CreateSkillData(sanitizedSkillName);
             
             SkillClassGenerator.CreateSkillClass(sanitizedSkillName);
-
-            Debug.Log($"[SkillCreator] ✔ Generated Skill + Data classes → {sanitizedSkillName}");
 
             return false;
         }
@@ -76,23 +75,11 @@ namespace SkillSystem.Editor.Windows
 
             string sanitizedSkillName = GetSanitizedSkillName();
 
-            Debug.Log($"[SkillCreator] Creating Skill SO → {sanitizedSkillName}");
-
             SkillDataGenerator.CreateSo(sanitizedSkillName);
-
-            Debug.Log($"[SkillCreator] ✔ Skill SO created → {sanitizedSkillName}");
         }
         private static bool DrawGenerateSkillClassesButton() => GUILayout.Button("Generate Skill Classes");
         private static bool DrawCreateScriptableObjectButton() => GUILayout.Button("Create Skill ScriptableObject");
-        private bool CheckSkillNameIsEmpty()
-        {
-            if (!string.IsNullOrWhiteSpace(_skillName))
-                return false;
-
-            Debug.LogError("[SkillCreator] ERROR: Skill name cannot be empty!");
-
-            return true;
-        }
+        private bool CheckSkillNameIsEmpty() => string.IsNullOrWhiteSpace(_skillName);
         private string GetSanitizedSkillName() => _skillName.Trim().Replace(" ", string.Empty);
         #endregion
     }

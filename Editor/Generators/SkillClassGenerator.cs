@@ -1,9 +1,11 @@
 ﻿using System.IO;
 using UnityEditor;
-using UnityEngine;
 
 namespace SkillSystem.Editor.Generators
 {
+    /// <summary>
+    /// Generates runtime skill logic classes based on a given skill name.
+    /// </summary>
     public static class SkillClassGenerator
     {
         #region Constants
@@ -12,27 +14,21 @@ namespace SkillSystem.Editor.Generators
         #endregion
         
         #region Executes
+        /// <summary>
+        /// Creates a concrete skill class file inheriting from BaseSkill for the given skill name.
+        /// </summary>
+        /// <param name="skillName">Name of the skill to generate the class for.</param>
         public static void CreateSkillClass(string skillName)
         {
-            Debug.Log($"[SkillClassGenerator] Requested skill class generate → {skillName}");
-
             if (!Directory.Exists(SkillClassFolder))
-            {
                 Directory.CreateDirectory(SkillClassFolder);
-                
-                Debug.Log($"[SkillClassGenerator] Created folder → {SkillClassFolder}");
-            }
 
             string className = $"{skillName}Skill";
             string filePath = $"{SkillClassFolder}/{className}.cs";
             string dataName = $"{skillName}Data";
 
             if (File.Exists(filePath))
-            {
-                Debug.LogWarning($"[SkillClassGenerator] SKIPPED. Class already exists → {filePath}");
-                
                 return;
-            }
 
             string content =
 $@"using SkillSystem.Runtime.Data;
@@ -61,8 +57,6 @@ namespace SkillSystem.Runtime.Skills
             File.WriteAllText(filePath, content);
             
             AssetDatabase.Refresh();
-
-            Debug.Log($"[SkillClassGenerator] ✔ Created skill class → {className}");
         }
         #endregion
     }

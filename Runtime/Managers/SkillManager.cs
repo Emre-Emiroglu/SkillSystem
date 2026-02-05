@@ -4,11 +4,13 @@ using System.Linq;
 using System.Reflection;
 using SkillSystem.Runtime.Data;
 using SkillSystem.Runtime.Enums;
-using SkillSystem.Runtime.Interfaces;
 using UnityEngine;
 
 namespace SkillSystem.Runtime.Managers
 {
+    /// <summary>
+    /// Central manager responsible for loading, initializing and controlling skills.
+    /// </summary>
     public static class SkillManager
     {
         #region Constants
@@ -21,68 +23,49 @@ namespace SkillSystem.Runtime.Managers
         #endregion
 
         #region Executes
+        /// <summary>
+        /// Initializes the skill system by loading all SkillData and preparing instances.
+        /// </summary>
         public static void InitializeManager()
         {
             LoadAllSkillData();
             
             PrepareInstanceMap();
         }
+        
+        /// <summary>
+        /// Initializes a specific skill by name.
+        /// </summary>
+        /// <param name="skillName">Name of the skill.</param>
         public static void InitializeSkill(string skillName)
         {
             if (!TryGetSkill(skillName, out SkillData data, out object instance))
                 return;
-
-            InvokeMethod(instance, "Initialize", new object[] { data });
+            
+            InvokeMethod(instance, "Initialize", new object[] {data});
         }
-        public static void ChangeSkillState(string skillName, SkillState newState)
+        
+        /// <summary>
+        /// Changes the runtime state of a specific skill.
+        /// </summary>
+        /// <param name="skillName">Name of the skill.</param>
+        /// <param name="newSkillState">New state to apply.</param>
+        public static void ChangeSkillState(string skillName, SkillState newSkillState)
         {
             if (!TryGetSkill(skillName, out _, out object instance))
                 return;
-
-            InvokeMethod(instance, "ChangeState", new object[] { newState });
             
-            CheckSkillPrerequisites();
+            InvokeMethod(instance, "ChangeState", new object[] {newSkillState});
         }
-        private static void LoadAllSkillData()
-        {
-            DataMap.Clear();
-
-            SkillData[] allData = Resources.LoadAll<SkillData>(ResourcesSkillDataFolder);
-
-            foreach (SkillData data in allData)
-                if (!string.IsNullOrWhiteSpace(data.SkillName))
-                    DataMap[data.SkillName] = data;
-        }
-        private static void PrepareInstanceMap()
-        {
-            InstanceMap.Clear();
-
-            foreach (string skillName in DataMap.Keys)
-                InstanceMap[skillName] = null;
-        }
-        private static void CheckSkillPrerequisites()
-        {
-            foreach ((string skillName, SkillData data) in DataMap)
-            {
-                if (!TryGetSkill(skillName, out _, out object instance))
-                    continue;
-
-                if (instance is not ISkillLogic<SkillData> skill)
-                    continue;
-
-                if (skill.GetSkillState != SkillState.Locked)
-                    continue;
-
-                bool allUnlocked = data.Prerequisites.All(p =>
-                    InstanceMap.TryGetValue(p.SkillName, out object prereqInstance) &&
-                    prereqInstance is ISkillLogic<SkillData>
-                        { GetSkillState: SkillState.Unlocked });
-
-                if (allUnlocked)
-                    ChangeSkillState(skillName, SkillState.Unlockable);
-            }
-        }
-        private static bool TryGetSkill(string skillName, out SkillData data, out object instance)
+        
+        /// <summary>
+        /// Attempts to retrieve the SkillData and runtime instance of a skill.
+        /// </summary>
+        /// <param name="skillName">Name of the skill.</param>
+        /// <param name="data">Associated SkillData.</param>
+        /// <param name="instance">Runtime skill instance.</param>
+        /// <returns>True if the skill exists.</returns>
+        public static bool TryGetSkill(string skillName, out SkillData data, out object instance)
         {
             data = null;
             instance = null;
@@ -104,6 +87,23 @@ namespace SkillSystem.Runtime.Managers
 
             return true;
         }
+        private static void LoadAllSkillData()
+        {
+            DataMap.Clear();
+
+            SkillData[] allData = Resources.LoadAll<SkillData>(ResourcesSkillDataFolder);
+
+            foreach (SkillData data in allData)
+                if (!string.IsNullOrWhiteSpace(data.SkillName))
+                    DataMap[data.SkillName] = data;
+        }
+        private static void PrepareInstanceMap()
+        {
+            InstanceMap.Clear();
+
+            foreach (string skillName in DataMap.Keys)
+                InstanceMap[skillName] = null;
+        }
         private static Type FindSkillType(string skillName)
         {
             string expected = skillName + "Skill";
@@ -122,7 +122,7 @@ namespace SkillSystem.Runtime.Managers
         }
         private static void InvokeMethod(object instance, string methodName, object[] parameters)
         {
-            MethodInfo method = instance.GetType().GetMethod(methodName);
+            MethodInfo method = instance.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.Public);
                     
             method?.Invoke(instance, parameters);
         }
