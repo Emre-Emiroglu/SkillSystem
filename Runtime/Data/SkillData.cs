@@ -23,14 +23,5 @@ namespace SkillSystem.Runtime.Data
             set => prerequisites = value;
         }
         #endregion
-        
-#if UNITY_EDITOR
-        [SerializeField] private Vector2 editorPosition;
-        public Vector2 EditorPosition
-        {
-            get => editorPosition;
-            set => editorPosition = value;
-        }
-#endif
     }
 }

@@ -16,11 +16,7 @@ namespace SkillSystem.Runtime.Skills
         #endregion
         
         #region Core
-        public virtual void Initialize(TSkillData skillData)
-        {
-            SkillData = skillData;
-            SkillState = SkillState.Locked;
-        }
+        public virtual void Initialize(TSkillData skillData) => SkillData = skillData;
         public virtual void ChangeState(SkillState newSkillState) => SkillState = newSkillState;
         #endregion
     }

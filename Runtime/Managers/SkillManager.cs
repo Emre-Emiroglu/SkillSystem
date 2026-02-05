@@ -14,8 +14,8 @@ namespace SkillSystem.Runtime.Managers
         #region Constants
         private const string ResourcesSkillDataFolder = "SkillSystem";
         #endregion
-        
-        #region Data Maps
+
+        #region ReadonlyFields
         private static readonly Dictionary<string, SkillData> DataMap = new();
         private static readonly Dictionary<string, object> InstanceMap = new();
         #endregion
@@ -26,8 +26,6 @@ namespace SkillSystem.Runtime.Managers
             LoadAllSkillData();
             
             PrepareInstanceMap();
-            
-            UnlockSkillsBasedOnPrerequisites();
         }
         public static void InitializeSkill(string skillName)
         {
@@ -42,8 +40,8 @@ namespace SkillSystem.Runtime.Managers
                 return;
 
             InvokeMethod(instance, "ChangeState", new object[] { newState });
-
-            UnlockSkillsBasedOnPrerequisites();
+            
+            CheckSkillPrerequisites();
         }
         private static void LoadAllSkillData()
         {
@@ -62,22 +60,26 @@ namespace SkillSystem.Runtime.Managers
             foreach (string skillName in DataMap.Keys)
                 InstanceMap[skillName] = null;
         }
-        private static void UnlockSkillsBasedOnPrerequisites()
+        private static void CheckSkillPrerequisites()
         {
             foreach ((string skillName, SkillData data) in DataMap)
             {
                 if (!TryGetSkill(skillName, out _, out object instance))
                     continue;
 
-                if (instance is not ISkillLogic<SkillData> skill || skill.GetSkillState == SkillState.Unlocked)
+                if (instance is not ISkillLogic<SkillData> skill)
+                    continue;
+
+                if (skill.GetSkillState != SkillState.Locked)
                     continue;
 
                 bool allUnlocked = data.Prerequisites.All(p =>
                     InstanceMap.TryGetValue(p.SkillName, out object prereqInstance) &&
-                    prereqInstance is ISkillLogic<SkillData> { GetSkillState: SkillState.Unlocked });
+                    prereqInstance is ISkillLogic<SkillData>
+                        { GetSkillState: SkillState.Unlocked });
 
                 if (allUnlocked)
-                    InvokeMethod(instance, "ChangeState", new object[] { SkillState.Unlockable });
+                    ChangeSkillState(skillName, SkillState.Unlockable);
             }
         }
         private static bool TryGetSkill(string skillName, out SkillData data, out object instance)
@@ -123,20 +125,6 @@ namespace SkillSystem.Runtime.Managers
             MethodInfo method = instance.GetType().GetMethod(methodName);
                     
             method?.Invoke(instance, parameters);
-        }
-        public static bool TryGetSkillState(string skillName, out SkillState state)
-        {
-            state = SkillState.Locked;
-
-            if (!InstanceMap.TryGetValue(skillName, out object instance))
-                return false;
-
-            if (instance is not ISkillLogic<SkillData> skill)
-                return false;
-            
-            state = skill.GetSkillState;
-                
-            return true;
         }
         #endregion
     }
